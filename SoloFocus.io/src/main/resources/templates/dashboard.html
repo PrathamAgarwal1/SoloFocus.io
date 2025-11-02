@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SoloFocus</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body class="has-navbar">
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="/" class="logo">SoloFocus</a>
+                <ul class="nav-menu">
+                    <li><a href="/timer">Timer</a></li>
+                    <li><a href="/dashboard" class="active">Dashboard</a></li>
+                    <li th:if="${session.username} != null">
+                        <span class="username">Welcome, <span th:text="${session.username}"></span></span>
+                    </li>
+                    <li><a href="/auth/logout" class="logout-btn">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dashboard-main">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Performance</h1>
+                <p class="dashboard-subtitle">Time spent in focus sessions</p>
+            </div>
+
+            <div class="stats-grid">
+                <!-- Total Focus Hours -->
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3 class="stat-title">Total Focus Hours</h3>
+                        <p class="stat-value" th:text="${totalHours != null ? #numbers.formatDecimal(totalHours, 1, 2) : '0.0'}">0.0</p>
+                        <p class="stat-unit">hours</p>
+                    </div>
+                </div>
+
+                <!-- Current Streak -->
+                <div class="stat-card stat-card-streak">
+                    <div class="stat-content">
+                        <h3 class="stat-title">Current Streak</h3>
+                        <p class="stat-value" th:text="${currentStreak != null ? currentStreak : 0}">0</p>
+                        <p class="stat-unit">consecutive days</p>
+                        <p class="stat-subtitle" style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+                            Best: <span th:text="${maxStreak != null ? maxStreak : 0}" style="color: var(--primary-color); font-weight: 600;">0</span> days
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Last Session -->
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3 class="stat-title">Last Session</h3>
+                        <p class="stat-value-small" th:if="${lastSessionTime} != null" th:text="${#temporals.format(lastSessionTime, 'MMM dd, yyyy')}">Never</p>
+                        <p class="stat-value-small" th:if="${lastSessionTime} == null">Never</p>
+                        <p class="stat-unit" th:if="${lastSessionTime} != null" th:text="${#temporals.format(lastSessionTime, 'HH:mm')}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contribution Graph -->
+            <div class="contribution-section">
+                <div class="section-header">
+                    <div>
+                        <h2><span id="contributionCount">0</span> Session in <span id="contributionYear">202</span></h2>
+                        <p class="section-description">Your focus activity over the past year</p>
+                    </div>
+                </div>
+                <div class="contribution-graph-wrapper">
+                    <div id="contributionGraph"></div>
+                    <div class="contribution-legend">
+                        <span class="legend-label">Less</span>
+                        <div class="legend-squares">
+                            <div class="legend-square" data-level="0"></div>
+                            <div class="legend-square" data-level="1"></div>
+                            <div class="legend-square" data-level="2"></div>
+                            <div class="legend-square" data-level="3"></div>
+                            <div class="legend-square" data-level="4"></div>
+                        </div>
+                        <span class="legend-label">More</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Focus Stats Chart -->
+            <div class="chart-section">
+                <div class="section-header">
+                    <div>
+                        <h2>Focus Stats</h2>
+                        <p class="section-description">Track your productivity journey</p>
+                    </div>
+                    <div class="time-filter">
+                        <button class="time-filter-btn" id="timeFilterBtn">
+                            <span class="filter-emoji">⏱️</span>
+                            <span id="timeFilterText">This week</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="time-filter-dropdown" id="timeFilterDropdown">
+                            <div class="time-filter-item active" data-period="week">📅 This week</div>
+                            <div class="time-filter-item" data-period="month">📆 This month</div>
+                            <div class="time-filter-item" data-period="year">🗓️ This year</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contributionDataFromBackend = /*[[${contributionData}]]*/ {};
+        var weeklyDataFromBackend = /*[[${weeklyData}]]*/ {};
+        var monthlyDataFromBackend = /*[[${monthlyData}]]*/ {};
+        var yearlyDataFromBackend = /*[[${yearlyData}]]*/ {};
+        /*]]>*/
+    </script>
+
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

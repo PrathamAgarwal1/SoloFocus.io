@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer - SoloFocus</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="has-navbar">
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="/" class="logo">SoloFocus</a>
+                <ul class="nav-menu">
+                    <li><a href="/timer" class="active">Timer</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li th:if="${session.username} != null">
+                        <span class="username">Welcome, <span th:text="${session.username}"></span></span>
+                    </li>
+                    <li><a href="/auth/logout" class="logout-btn">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="timer-main">
+        <div class="timer-container">
+            <div class="timer-mode-selector">
+                <button class="mode-btn active" data-mode="pomodoro">Pomodoro</button>
+                <button class="mode-btn" data-mode="short_break">Short Break</button>
+                <button class="mode-btn" data-mode="long_break">Long Break</button>
+            </div>
+            
+            <div class="timer-display">
+                <div class="timer-circle">
+                    <svg class="timer-svg" viewBox="0 0 100 100">
+                        <circle class="timer-circle-bg" cx="50" cy="50" r="45"></circle>
+                        <circle class="timer-circle-progress" cx="50" cy="50" r="45" id="progressCircle"></circle>
+                    </svg>
+                    <div class="timer-time-container">
+                        <div class="timer-time" id="timerTimeDisplay">
+                            <span class="time-value" id="minutes" data-editable="true">25</span>
+                            <span class="time-separator">:</span>
+                            <span class="time-value" id="seconds" data-editable="true">00</span>
+                        </div>
+                        <input type="text" class="timer-time-edit" id="timerTimeEdit" style="display: none;" maxlength="5" placeholder="25:00" pattern="[0-9]{1,2}:[0-5][0-9]">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timer-controls">
+                <button id="startBtn" class="btn btn-primary btn-large">START</button>
+                <button id="pauseBtn" class="btn btn-secondary btn-large" style="display: none;">PAUSE</button>
+                <button id="resetBtn" class="btn btn-reset" style="display: none;">Reset</button>
+            </div>
+            
+            <div class="timer-settings-toggle">
+                <button id="settingsBtn" class="settings-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="timer-settings-panel" id="settingsPanel" style="display: none;">
+                <div class="settings-header">
+                    <h3>Timer Settings</h3>
+                    <button class="settings-close" id="settingsClose">×</button>
+                </div>
+                <div class="settings-content">
+                    <div class="setting-group">
+                        <label for="pomodoroMinutes">Pomodoro</label>
+                        <input type="number" id="pomodoroMinutes" value="25" min="1" max="60">
+                        <span>minutes</span>
+                    </div>
+                    <div class="setting-group">
+                        <label for="shortBreakMinutes">Short Break</label>
+                        <input type="number" id="shortBreakMinutes" value="5" min="1" max="30">
+                        <span>minutes</span>
+                    </div>
+                    <div class="setting-group">
+                        <label for="longBreakMinutes">Long Break</label>
+                        <input type="number" id="longBreakMinutes" value="15" min="1" max="60">
+                        <span>minutes</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="sessionStatus" class="session-status"></div>
+        </div>
+    </main>
+    
+    <script th:src="@{/js/timer.js}"></script>
+</body>
+</html>

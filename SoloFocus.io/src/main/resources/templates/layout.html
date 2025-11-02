@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} != null ? ${title} : 'SoloFocus.io'">SoloFocus.io</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:if="${showHeader} != false">
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="/" class="logo">🍅 SoloFocus.io</a>
+                <ul class="nav-menu">
+                    <li><a href="/timer">Timer</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li th:if="${session.username} != null">
+                        <span class="username">Welcome, <span th:text="${session.username}"></span></span>
+                    </li>
+                    <li><a href="/auth/logout" class="logout-btn">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="main-content">
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:insert="${content}"></div>
+    </main>
+    
+    <footer th:if="${showFooter} != false">
+        <p>&copy; 2024 SoloFocus.io - Stay Focused, Stay Productive</p>
+    </footer>
+</body>
+</html>
+
